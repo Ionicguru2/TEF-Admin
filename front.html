@@ -1,0 +1,328 @@
+<!DOCTYPE html> 
+<html lang="en" style="height:100%;">
+    <head> 
+        <meta charset="utf-8"> 
+        <title>Front Page Admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="keywords" content="pinegrow, blocks, bootstrap" />
+        <meta name="description" content="My new website" />
+        <link rel="shortcut icon" href="ico/favicon.png"> 
+        <!-- Core CSS -->         
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"> 
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet">
+        <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet">
+        <!-- Style Library -->         
+        <link href="css/style-library-1.css" rel="stylesheet">
+        <link href="css/plugins.css" rel="stylesheet">
+        <link href="css/blocks.css" rel="stylesheet">
+        <link href="css/custom.css" rel="stylesheet">
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->         
+        <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+        <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/plugins.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+        <script>
+
+
+            function setCookie(cname, cvalue, exdays) {
+
+                document.cookie = cname + "=" + cvalue;
+            }
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for(var i = 0; i <ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+            function checkCookie() {
+                var user = getCookie("login");
+                if (user != "") {
+                    // location.href="login.html";
+                } else {
+                    location.href="login.html";
+                }
+            }
+
+            function getFormatedDate(date, time)
+            {
+                var strFBEventDateTime = date + ' ' + time;
+                var fbEventTime = new Date(strFBEventDateTime).getTime();;
+
+                var today = new Date().getTime();;
+                var hourDiff = fbEventTime - today;
+                var minDiff = hourDiff / 60 / 1000;
+
+                var d = new Date(strFBEventDateTime);
+                var weekdays = new Array(7);
+                weekdays[0] =  "SUNDAY";
+                weekdays[1] = "MONDAY";
+                weekdays[2] = "TUESDAY";
+                weekdays[3] = "WEDNESDAY";
+                weekdays[4] = "THURSDAY";
+                weekdays[5] = "FRIDAY";
+                weekdays[6] = "SATURDAY";
+                
+                var n = weekdays[d.getDay()];
+
+                var months = new Array();
+                months[0] = "JANUARY";
+                months[1] = "FEBRARY";
+                months[2] = "MARCH";
+                months[3] = "APRIL";
+                months[4] = "MAY";
+                months[5] = "JUNE";
+                months[6] = "NULY";
+                months[7] = "AUGUST";
+                months[8] = "SEPTEMBER";
+                months[9] = "OCTORBER";
+                months[10] = "NOVEMBER";
+                months[11] = "DECEMBER";
+                var m = months[d.getMonth()];
+
+                var dayOfMonth = d.getDate();
+                var s=["TH","ST","ND","RD"];
+                var v=dayOfMonth%100;
+                dayOfMonth = dayOfMonth+(s[(v-20)%10]||s[v]||s[0]);
+
+                return n + ', ' + m + ' ' + dayOfMonth;
+            }
+
+            // function getFormatedTime(start, end)
+            // {
+            //     var startTime = new Date();
+            //     startTime.setHours(start.substr(0, start.indexOf(":")));
+            //     startTime.setMinutes(start.substr(start.indexOf(":") + 1));
+            //     startTime.setSeconds(0);
+
+            //     var endTime = new Date();
+            //     endTime.setHours(end.substr(0, endindexOf(":")));
+            //     endTime.setMinutes(end.substr(end.indexOf(":") + 1));
+            //     endTime.setSeconds(0);
+
+            //     var sHours = startTime.getHours();
+            //     var sAMPM = sHours >= 12 ? ' PM' : ' AM';
+            //     sHours = sHours % 12;
+            //     sHours = sHours ? sHours : 12;
+            //     sHours = sHours < 10 ? ('0' + sHours) : sHours;
+            //     var sMins = startTime.getMinutes();
+            //     sMins = sMins == '0' ? '00' : sMins;
+
+            //     var strStart = sHours + ':' + sMins + sAMPM;
+
+            //     var eHours = endTime.getHours();
+            //     var eAMPM = eHours >= 12 ? ' PM' : ' AM';
+            //     eHours = eHours % 12;
+            //     eHours = eHours ? eHours : 12;
+            //     eHours = eHours < 10 ? ('0' + eHours) : eHours;
+            //     var eMins = endTime.getMinutes();
+            //     eMins = eMins == '0' ? '00' : eMins;
+
+            //     var strEnd = eHours + ':' + eMins + eAMPM;
+
+            //     return strStart + ' - ' + strEnd;
+            // }
+
+
+            $(document).ready(function(){
+
+            checkCookie();
+            // Initialize Firebase
+            // TODO: Replace with your project's customized code snippet
+            var config = {
+                apiKey: "AIzaSyCPo5-BG9O9x2jXRAmNuH66G3b_ZL5MbIA",
+                authDomain: "trust-education-foundation.firebaseapp.com",
+                databaseURL: "trust-education-foundation.firebaseio.com",
+
+            };
+
+            var app = firebase.initializeApp(config);
+
+
+            //        firebase.auth().signInAnonymously()
+            //                .then(function() {
+            //                    console.log('Logged in as Anonymous!')
+            //                }).catch(function(error) {
+            //            var errorCode = error.code;
+            //            var errorMessage = error.message;
+            //            console.log(errorCode);
+            //            console.log(errorMessage);
+            //        });
+
+            var email = "mark@semiplay.com";
+            var password = "123456";
+
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                console.log(error.code);
+                console.log(error.message);
+            });
+
+
+
+
+            var ref = firebase.database().ref();
+
+            ref.on("value", function(snapshot) {
+                var current = snapshot.val().current;
+                $("#date").val(current.date);
+                $("#startTime").val(current.startTime);
+                $("#endTime").val(current.endTime);
+                $("#roomLocation").val(current.roomLocation);
+                $("#sessionTitle").val(current.sessionTitle);
+                $("#speakerNameAndTitle").val(current.speakerNameAndTitle);
+
+                $("#msgDate").text(getFormatedDate(current.date, current.startTime));
+                $("#msgTime").text(current.startTime + ' - ' + current.endTime);
+                $("#msgRoomLocation").text(current.roomLocation);
+                $("#msgSessionTitle").text(current.sessionTitle);
+                $("#msgSpeakerNameAndTitle").text(current.speakerNameAndTitle);
+                console.log(snapshot.val().current.day);
+            }, function (error) {
+                console.log("Error: " + error.code);
+            });
+
+                $("#afSubmit").on('click', function () {
+                    var currentRef = firebase.database().ref("sessions/");
+
+                    currentRef.push({
+                        date: $("#date").val(),
+                        startTime:$("#startTime").val(),
+                        endTime:$("#endTime").val(),
+                        roomLocation:$("#roomLocation").val(),
+                        sessionTitle:$("#sessionTitle").val(),
+                        speakerNameAndTitle:$("#speakerNameAndTitle").val()
+                    });
+                    alert('updated1');
+
+                });
+
+
+            });
+        </script>
+    </head>     
+    <body data-spy="scroll" data-target="nav">
+        <header id="header-1" class="soft-scroll header-1">
+            <!-- Navbar -->
+            <nav class="main-nav navbar-fixed-top headroom headroom--pinned">
+                <div class="container">
+                    <!-- Brand and toggle -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="#"></a>
+                    </div>
+                    <!-- Navigation -->
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="active nav-item">
+                                <a href="front.html">Front Page Admin</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="chat.html">Conference Feed Admin</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#">Dropdown 1</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Dropdown 2</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Dropdown 3</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Dropdown 4</a>
+                                    </li>
+                                </ul>                                 
+                            </li>
+                            <!--//dropdown-->                             
+                            <li class="nav-item">
+                            </li>
+                        </ul>
+                        <!--//nav-->
+                    </div>
+                    <!--// End Navigation -->
+                </div>
+                <!--// End Container -->
+            </nav>
+            <!--// End Navbar -->
+        </header>
+        <div class="content-block contact-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="contact" class="form-container">
+                            <fieldset>
+                                <div id="message"></div>
+                                <form id="admin">
+                                    <div class="form-group">
+                                        <input name="date" id="date" type="date" value="" placeholder="Date" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        Start<input name="startTime" id="startTime" type="time" value="" placeholder="Time" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        End<input name="endTime" id="endTime" type="time" value="" placeholder="Time" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input name="sessionTitle" id="sessionTitle" type="text" value="" placeholder="Session Title" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input name="roomLocation" id="roomLocation" type="text" value="" placeholder="Room/Location" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input name="speakerNameAndTitle" id="speakerNameAndTitle" type="text" value="" placeholder="Speaker name, title" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="editContent">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="button" id="afSubmit" name="afSubmit">Update</button>
+                                    </div>
+                                </form>
+                            </fieldset>
+                        </div>
+                        <!-- /.form-container -->
+                    </div>
+                    <div class="col-md-6">
+                        <h2>Current Message</h2>
+                        <p>This is the message currently displayed on the app Home Page</p>
+                        <div class="well">
+                            <div id="msgDate"></div>
+                            <div id="msgTime">
+                            </div>
+                            <div id="msgSessionTitle">
+                            </div>
+                            <div id="msgRoomLocation">
+                            </div>
+                            <div id="msgSpeakerNameAndTitle">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container -->
+        </div>
+    </body>     
+</html>
