@@ -1412,7 +1412,7 @@ fieldset legend
 .form-group
 {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .form-group.focus .form-control,
