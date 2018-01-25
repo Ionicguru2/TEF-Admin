@@ -115,6 +115,7 @@
 
                 ref.child("sessions/day1").on("value", function(snapshot) {
                     if (snapshot.val()) {
+                        $("#date1").val(snapshot.val().date);
                         var daySessions = "";
                         snapshot.forEach(function (session) {
                             var sessionData = session.val();
@@ -157,6 +158,7 @@
 
                 ref.child("sessions/day2").on("value", function(snapshot) {
                     if (snapshot.val()) {
+                        $("#date2").val(snapshot.val().date);
                         var daySessions = "";
                         snapshot.forEach(function (session) {
                             var sessionData = session.val();
@@ -199,6 +201,7 @@
 
                 ref.child("sessions/day3").on("value", function(snapshot) {
                     if (snapshot.val()) {
+                        $("#date3").val(snapshot.val().date);
                         var daySessions = "";
                         snapshot.forEach(function (session) {
                             var sessionData = session.val();
@@ -241,6 +244,7 @@
 
                 ref.child("sessions/day4").on("value", function(snapshot) {
                     if (snapshot.val()) {
+                        $("#date4").val(snapshot.val().date);
                         var daySessions = "";
                         snapshot.forEach(function (session) {
                             var sessionData = session.val();
@@ -309,37 +313,19 @@
                 });
                 alert('added');
 
-                refreshSessions();
+                refreshSessions();                
+            }
 
-                // daySessions += 
-                //     '<fieldset>'+
-                //         '<form>'+
-                //             '<div class="form-group">'+
-                //                 'Start<input name="startTime" id="startTime" type="time" placeholder="Time" class="form-control" />'+
-                //             '</div>'+
-                //             '<div class="form-group">'+
-                //                 'End<input name="endTime" id="endTime" type="time" placeholder="Time" class="form-control" />'+
-                //             '</div>'+
-                //             '<div class="form-group">'+
-                //                 '<input name="sessionTitle" id="sessionTitle" type="text" placeholder="Session Title" class="form-control" />'+
-                //             '</div>'+
-                //             '<div class="form-group">'+
-                //                 '<input name="roomLocation" id="roomLocation" type="text" placeholder="Room/Location" class="form-control" />'+
-                //             '</div>'+
-                //             '<div class="form-group">'+
-                //                 '<input name="speakerNameAndTitle" id="speakerNameAndTitle" type="text" placeholder="Speaker name, title" class="form-control" />'+
-                //             '</div>'+
-                //             '<div class="form-group">'+
-                //                 '<div class="editContent">'+
-                //                 '</div>'+
-                //             '</div>'+
-                //             '<div class="form-group">'+
-                //                 '<input class="btn btn-primary" type="button" onclick="addSession(\''+dayNumber+'\')" value="Update"></input>'+
-                //             '</div>'+
-                //         '</form>'+
-                //     '</fieldset>';
+            function updateDayDate(dayNumber) {
+                var dayDate = $("#date" + dayNumber).val();
+                console.log(dayDate);
 
-                // $("#day1-sessions").html(daySessions);
+                var currentRef = firebase.database().ref("sessions/day"+dayNumber);
+
+                currentRef.update({
+                    date: dayDate
+                });
+                alert('updated');
             }
 
         </script>
@@ -367,22 +353,46 @@
                     <div class="col-md-6">
                         <div id="contact" class="form-container">
                             <fieldset id="day1-block" class="session">
-                                <div class="day-title">Sunday, February 25, 2016</div>
+                                <!-- <div class="day-title">Sunday, February 25, 2016</div> -->
+                                <div class="form-group">
+                                    <div class="day-title">Day 1 - Date</div> 
+                                    <input name="date" id="date1" type="date" value="" placeholder="Date" class="form-control" />
+                                    <input class="btn btn-primary" type="button" onclick="updateDayDate(1)" value="Update Date"></input>
+                                </div>
+
                                 <div id="day1-sessions"></div>
-                                <input class="btn-add-session" type="button" onclick="addSessionForm(1)" value="add a new session"></input>
+                                <input class="btn-add-session" type="button" onclick="addSessionForm('1')" value="add a new session"></input>
                             </fieldset>
                             <fieldset id="day2-block">
-                                <div class="day-title">Monday, February 26, 2016</div>
+                                <!-- <div class="day-title">Monday, February 26, 2016</div> -->
+                                <div class="form-group">
+                                    <div class="day-title">Day 2 - Date</div> 
+                                    <input name="date" id="date2" type="date" value="" placeholder="Date" class="form-control" />
+                                    <input class="btn btn-primary" type="button" onclick="updateDayDate('2')" value="Update Date"></input>
+                                </div>
+
                                 <div id="day2-sessions"></div>
                                 <input class="btn-add-session" type="button" onclick="addSessionForm(2)" value="add a new session"></input>
                             </fieldset>
                             <fieldset id="day3-block">
-                                <div class="day-title">Tuesday, February 27, 2016</div>
+                                <!-- <div class="day-title">Tuesday, February 27, 2016</div> -->
+                                <div class="form-group">
+                                    <div class="day-title">Day 3 - Date</div> 
+                                    <input name="date" id="date3" type="date" value="" placeholder="Date" class="form-control" />
+                                    <input class="btn btn-primary" type="button" onclick="updateDayDate('3')" value="Update Date"></input>
+                                </div>
+
                                 <div id="day3-sessions"></div>
                                 <input class="btn-add-session" type="button" onclick="addSessionForm(3)" value="add a new session"></input>
                             </fieldset>
                             <fieldset id="day4-block">
-                                <div class="day-title">Sunday, February 28, 2016</div>
+                                <!-- <div class="day-title">Sunday, February 28, 2016</div> -->
+                                <div class="form-group">
+                                    <div class="day-title">Day 4 - Date</div> 
+                                    <input name="date" id="date4" type="date" value="" placeholder="Date" class="form-control" />
+                                    <input class="btn btn-primary" type="button" onclick="updateDayDate('4')" value="Update Date"></input>
+                                </div>
+
                                 <div id="day4-sessions"></div>
                                 <input class="btn-add-session" type="button" onclick="addSessionForm(4)" value="add a new session"></input>
                             </fieldset>
